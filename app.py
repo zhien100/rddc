@@ -1,12 +1,13 @@
 import streamlit as st
 from PIL import Image, ImageDraw
 
+# user interface
+
 def load_image(image_file):
 	img = Image.open(image_file)
 	return img
 
 def yolo_to_xml_bbox(bbox, w, h):
-    # x_center, y_center width heigth
     w_half_len = (bbox[2] * w) / 2
     h_half_len = (bbox[3] * h) / 2
     xmin = int((bbox[0] * w) - w_half_len)
@@ -34,12 +35,12 @@ image_file = st.file_uploader("Upload Image", type=["png","jpg","jpeg"])
 
 if image_file is not None:
 
-    # To See details
+    # display details of image
     file_details = {"filename":image_file.name, "filetype":image_file.type,"filesize":image_file.size}
     #st.write(file_details)
-    st.write("Image Uploaded")
+    st.write("**Image Uploaded**")
 
-    # To View Uploaded Image
+    # display uploaded image
     st.image(load_image(image_file),width=250)
 
     result = st.button("Run")
@@ -54,10 +55,10 @@ if image_file is not None:
             bbox = [float(x) for x in data[1:]]
             bboxes.append(yolo_to_xml_bbox(bbox, img.width, img.height))
 
-
+    # if run button is pressed, display result
     if result:
-        st.write("Original Image")
+        st.write("**Original Image**")
         st.image(load_image(image_file),width=250)
-        st.write("\nResult")
+        st.write("\n**Result**")
         draw_image(img, bboxes)
         st.image('example.jpg',width = 250)
